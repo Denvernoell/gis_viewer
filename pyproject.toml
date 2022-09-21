@@ -6,7 +6,7 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10,<3.11.0"
-gdal = {file = "GDAL-3.4.3-cp310-cp310-win_amd64.whl"}
+# gdal = {file = "GDAL-3.4.3-cp310-cp310-win_amd64.whl"}
 geopandas = "^0.10.2"
 ipykernel = "^6.15.0"
 pandas = "^1.4.2"

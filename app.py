@@ -1,6 +1,6 @@
 #%%
 # from pyperclip import copy
-# '/c/Users/Denver/AppData/Local/pypoetry/Cache/virtualenvs/geoedit-1JcP-oDe-py3.10/Scripts/python.exe -m streamlit run wq_stream.py'
+# '/c/Users/Denver/AppData/Local/pypoetry/Cache/virtualenvs/geoedit-1JcP-oDe-py3.10/Scripts/python.exe -m streamlit run app.py'
 #%%
 #%%
 import streamlit as st
@@ -10,20 +10,21 @@ import geopandas as gpd
 import fiona
 import contextily as cx
 
-# '/c/Users/Denver/AppData/Local/pypoetry/Cache/virtualenvs/stream-cRD5AfwB-py3.10/Scripts/python.exe -m streamlit run wq_stream.py'
 
 
 
 # """Current Database from Cheryl"""
 
-# base_path = r'\\ppeng.com\pzdata\clients\Aliso WD-2500\Ongoing\GIS'
+# base_path = r'\\ppeng.com\pzdata\clients\Aliso WD-250	0\Ongoing\GIS'
 # base_path = r'\\ppeng.com\pzdata\clients\Tranquillity ID-1075\Ongoing-1075'
+# base_path = r'\\ppeng.com\pzdata\clients\Eastside WD-2344\234422001- Upland Pipeline Due Diligence\400 GIS'
 base_path = st.text_input('Folder')
 
 """Shapefiles"""
 # get_relative = lambda L: [i.relative_to(base_path) for i in L]
 get_relative = lambda i: i.relative_to(base_path)
 
+# @st.cache()
 shapefiles = {get_relative(i):i for i in Path(base_path).glob('**/*.shp')}
 gdbs = {get_relative(i):i for i in Path(base_path).glob('**/*.gdb')}
 
@@ -45,30 +46,65 @@ else:
 	file_path = shapefiles[file]
 	gdf = gpd.read_file(file_path)
 
+# gdf = gdf.to_crs(epsg='6420')
+# st.markdown(gdf.crs)
 
 fig,ax = plt.subplots(1,1,figsize=(10,10))
 
+
+columns = [i for i in gdf.columns]
+columns.remove('geometry')
+s_columns = st.multiselect('columns',columns,default=columns)
+column_color = st.selectbox('Color by',columns)
 # Plot all sections
-splot = gdf.plot(
+
+
+st.markdown(f"crs = {gdf.crs}")
+# st.markdown(f"crs = {gdf.}")
+
+# """Point"""
+try:
+	splot = gdf.plot(
 	ax=ax,
-	# edgecolor='black',
-	figsize=(10,10)
+	figsize=(10,10),
+	column=column_color,
+	legend=True,
+	# cax=cax
+	legend_kwds={
+		'title':column_color,
+		'bbox_to_anchor':(1,1)
+		}
+	
 	)
 
 
-# base_plot = gdf.plot(
-# 	# ax=ax,
-# 	# edgecolor='black',
-# 	figsize=(10,10)
-# 	)
 
-# ax1 = parcel.plot(ax=splot,column='Section')
-# # parcel.plot(ax=splot,column='Section',categorical=True)
-# # parcel.plot(ax=ax2,column='Section',legend=True,legend_kwds={'fmt':'{:.0f}'},categorical=True)
-# parcel.plot(ax=ax2,column='Section',legend=True,categorical=True,legend_kwds={'bbox_to_anchor':(.5,0.5)})
+except:
+	"""Colorbar"""
+	splot = gdf.plot(
+	ax=ax,
+	figsize=(10,10),
+	column=column_color,
+	legend=True,
+	# cax=cax
+	legend_kwds={
+		}
+	
+	)
+
+# remove axis
+ax.set_axis_off()
+
+
+
 
 # """Plot"""
-# cx.add_basemap(base_plot,source=cx.providers.Stamen.TonerLite)
+cx.add_basemap(
+	splot,
+	# source=cx.providers.Stamen.TonerLite
+	crs=gdf.crs,
+	source=cx.providers.OpenStreetMap.Mapnik,
+	)
 
 st.pyplot(fig)
 
@@ -77,12 +113,19 @@ st.pyplot(fig)
 
 st.markdown(f"Size = {gdf.shape}")
 # st.markdown(columns)
-columns = [i for i in gdf.columns]
-columns.remove('geometry')
-s_columns = st.multiselect('columns',columns,default=columns)
 # st.dataframe(gdf.describe())
 
 
 # st.write(gdf)
 # st.dataframe(gdf.loc[:,gdf.columns != 'geometry' ])
+txt = ""
+for i in s_columns:
+	txt += f"- {i}"
+	txt +='\n'
+
+st.markdown(txt)
+# if st.button('columns'):
+# 	st.markdown('\n- '.join(s_columns))
 st.dataframe(gdf[s_columns])
+
+# %%

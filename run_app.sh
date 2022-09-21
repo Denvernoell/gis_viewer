@@ -1,0 +1,1 @@
+/c/Users/Denver/AppData/Local/pypoetry/Cache/virtualenvs/geoedit-1JcP-oDe-py3.10/Scripts/python.exe -m streamlit run app.py

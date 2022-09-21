@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "geoedit"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.11.0"
+gdal = {file = "GDAL-3.4.3-cp310-cp310-win_amd64.whl"}
+geopandas = "^0.10.2"
+ipykernel = "^6.15.0"
+pandas = "^1.4.2"
+matplotlib = "^3.5.2"
+Rtree = "^1.0.0"
+pygeos = "^0.12.0"
+xlwings = "^0.27.10"
+datapane = "^0.14.0"
+streamlit = "^1.10.0"
+pytrs = {git = "https://github.com/JamesPImes/pyTRS.git", rev = "master"}
+pytrsplat = {git = "https://github.com/JamesPImes/pyTRSplat", rev = "master"}
+piltextbox = "^0.2.1"
+pregex = "^1.1.1"
+folium = "^0.12.1"
+mapclassify = "^2.4.3"
+contextily = "^1.2.0"
+openpyxl = "^3.0.10"
+SQLAlchemy = "^1.4.40"
+psycopg2 = "^2.9.3"
+GeoAlchemy2 = "^0.12.3"
+arcgis2geojson = "^3.0.1"
+spatialite = "^0.0.3"
+GeoAlchemy = "^0.7.2"
+geocoder = "^1.38.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
